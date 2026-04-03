@@ -39,7 +39,7 @@ async function main() {
     "docker-compose.yml",
     ".env.example",
     "README.md",
-    "README.en.md"
+    "README.ch.md"
   ]) {
     const sourcePath = path.join(rootDir, item);
     if (fs.existsSync(sourcePath)) {

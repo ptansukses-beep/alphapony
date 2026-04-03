@@ -148,6 +148,34 @@ npm run check-update
 npm run update
 ```
 
+Recommended update manifest for the current release:
+
+```bash
+https://github.com/ptansukses-beep/alphapony/releases/download/v0.1.0/latest.json
+```
+
+## Release Process
+
+For the next release, use this order:
+
+1. Update the version in `package.json`
+2. Build the release package:
+
+```bash
+ALPHAPONY_RELEASE_BASE_URL="https://github.com/ptansukses-beep/alphapony/releases/download/vX.Y.Z" npm run package-release
+```
+
+3. Upload both files from `dist/release/` to the GitHub Release:
+
+- `alphapony-X.Y.Z-<platform>.zip`
+- `latest.json`
+
+4. Set runtime env:
+
+```bash
+ALPHAPONY_UPDATE_MANIFEST_URL=https://github.com/ptansukses-beep/alphapony/releases/download/vX.Y.Z/latest.json
+```
+
 ## Development Notes
 
 For manual development and debugging, the most common commands are:

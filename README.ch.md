@@ -148,6 +148,34 @@ npm run check-update
 npm run update
 ```
 
+当前版本建议使用的更新清单地址：
+
+```bash
+https://github.com/ptansukses-beep/alphapony/releases/download/v0.1.0/latest.json
+```
+
+## 发布流程
+
+后续发版建议按这个顺序做：
+
+1. 更新 `package.json` 里的版本号
+2. 构建 release 包：
+
+```bash
+ALPHAPONY_RELEASE_BASE_URL="https://github.com/ptansukses-beep/alphapony/releases/download/vX.Y.Z" npm run package-release
+```
+
+3. 把 `dist/release/` 里的两个文件一起上传到 GitHub Release：
+
+- `alphapony-X.Y.Z-<platform>.zip`
+- `latest.json`
+
+4. 运行环境里把更新地址指向：
+
+```bash
+ALPHAPONY_UPDATE_MANIFEST_URL=https://github.com/ptansukses-beep/alphapony/releases/download/vX.Y.Z/latest.json
+```
+
 ## 开发说明
 
 如果你要手动进行开发调试，常用命令如下：
