@@ -1,7 +1,7 @@
 # AlphaPony
 
-English README: [`README.md`](README.md)  
-Chinese README: [`README.ch.md`](README.ch.md)
+[![English](https://img.shields.io/badge/English-README-111111?style=flat-square)](./README.md)
+[![中文](https://img.shields.io/badge/%E4%B8%AD%E6%96%87-README-f5f5f5?style=flat-square&labelColor=111111)](./README.ch.md)
 
 AlphaPony is the first decentralized AI investment assistant for the crypto asset industry, built to help investors make simple, fast, and accurate decisions and continuously improve returns in crypto markets.
 
