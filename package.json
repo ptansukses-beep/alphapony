@@ -1,0 +1,32 @@
+{
+  "name": "alphapony",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev -w frontend",
+    "build": "npm run api:build && npm run web:build",
+    "setup": "node ./scripts/setup.cjs",
+    "start": "node ./scripts/start.cjs",
+    "stop": "node ./scripts/stop.cjs",
+    "healthcheck": "node ./scripts/healthcheck.cjs",
+    "check-update": "node ./scripts/check-update.cjs",
+    "update": "node ./scripts/update.cjs",
+    "package-release": "node ./scripts/release-package.cjs",
+    "lint": "npm run lint -w frontend",
+    "api:dev": "npm run dev -w backend",
+    "api:build": "npm run build -w backend",
+    "api:start": "node ./scripts/api-start.cjs",
+    "web:build": "npm run build -w frontend",
+    "web:start": "node ./scripts/web-start.cjs",
+    "db:up": "docker compose up -d postgres",
+    "db:backup": "node ./scripts/backup-db.cjs",
+    "prisma:generate": "node ./scripts/prisma-generate.cjs",
+    "prisma:migrate:dev": "npm run prisma:migrate:dev -w backend",
+    "prisma:migrate:deploy": "node ./scripts/migrate.cjs",
+    "db:seed": "npm run db:seed -w backend"
+  }
+}

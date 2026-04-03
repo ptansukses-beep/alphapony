@@ -1,0 +1,241 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AssetStatus {
+  active
+  inactive
+}
+
+enum Direction {
+  bullish
+  bearish
+  watch
+}
+
+enum AlertStatus {
+  new
+  sent
+  archived
+}
+
+enum RuleTemplateType {
+  aggressive
+  conservative
+  default
+  custom
+}
+
+model Asset {
+  id                  String               @id @default(cuid())
+  symbol              String               @unique
+  name                String
+  status              AssetStatus          @default(active)
+  sortOrder           Int                  @default(0)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  analysisSnapshots   AssetAnalysisSnapshot[]
+  latestSignalStates  LatestSignalState[]
+  latestAiAnalysis    LatestAiAnalysis?
+  events              Event[]
+  alerts              Alert[]
+  ruleStrategyConfig  RuleStrategyConfig?
+  promptConfig        AssetPromptConfig?
+}
+
+model AssetAnalysisSnapshot {
+  id                 String            @id @default(cuid())
+  assetId            String
+  asset              Asset             @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  window             String
+  priceDisplay       String
+  priceChangeDisplay String
+  ruleDirection      Direction
+  ruleScore          Int
+  ruleConfidence     String
+  riskLevel          String
+  ruleDriversJson    Json
+  aiDirection        Direction
+  aiAction           String
+  aiStrength         String
+  aiConfidence       String
+  aiReasonsJson      Json
+  aiRisksJson        Json
+  consistencySummary String
+  briefNote          String?
+  updatedAt          DateTime
+  createdAt          DateTime          @default(now())
+  signalSnapshots    SignalSnapshot[]
+
+  @@index([assetId, window])
+}
+
+model SignalSnapshot {
+  id                 String                   @id @default(cuid())
+  analysisSnapshotId String
+  analysisSnapshot   AssetAnalysisSnapshot    @relation(fields: [analysisSnapshotId], references: [id], onDelete: Cascade)
+  signalType         String
+  label              String
+  direction          Direction
+  score              Int
+  confidence         String
+  driversJson        Json
+  highlightsJson     Json
+  createdAt          DateTime                 @default(now())
+  metrics            SignalSupportingMetric[]
+
+  @@index([analysisSnapshotId, signalType])
+}
+
+model SignalSupportingMetric {
+  id               String         @id @default(cuid())
+  signalSnapshotId String
+  signalSnapshot   SignalSnapshot @relation(fields: [signalSnapshotId], references: [id], onDelete: Cascade)
+  metricName       String
+  metricValue      String
+  displayOrder     Int            @default(0)
+  createdAt        DateTime       @default(now())
+}
+
+model Event {
+  id         String    @id @default(cuid())
+  assetId    String
+  asset      Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  fingerprint String?  @unique
+  eventType  String
+  title      String
+  summary    String
+  direction  Direction
+  score      Int?
+  occurredAt DateTime
+  sourceRef  String?
+  payloadJson Json?
+  createdAt  DateTime  @default(now())
+
+  @@index([assetId, occurredAt])
+}
+
+model LatestSignalState {
+  id            String    @id @default(cuid())
+  assetId        String
+  asset          Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  signalType     String
+  direction      Direction
+  biasLevel      String
+  score          Int
+  confidence     String
+  driversJson    Json
+  metricsJson    Json
+  stateJson      Json
+  lastChangedAt  DateTime
+  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime  @default(now())
+
+  @@unique([assetId, signalType])
+  @@index([signalType, updatedAt])
+}
+
+model LatestAiAnalysis {
+  id                 String    @id @default(cuid())
+  assetId            String    @unique
+  asset              Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  basedOnSnapshotId  String
+  basedOnSnapshotAt  DateTime
+  direction          Direction
+  biasLevel          String
+  score              Int
+  action             String
+  strength           String
+  confidence         String
+  summary            String
+  reasonsJson        Json
+  risksJson          Json
+  summaryLocalizedJson Json?
+  reasonsLocalizedJson Json?
+  risksLocalizedJson Json?
+  updatedAt          DateTime  @updatedAt
+  createdAt          DateTime  @default(now())
+
+  @@index([basedOnSnapshotId, updatedAt])
+}
+
+model Alert {
+  id          String      @id @default(cuid())
+  assetId      String
+  asset        Asset       @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  alertType    String
+  summary      String
+  status       AlertStatus @default(new)
+  triggeredAt  DateTime
+  payloadJson  Json?
+  createdAt    DateTime    @default(now())
+
+  @@index([assetId, triggeredAt])
+}
+
+model RuleStrategyConfig {
+  id          String           @id @default(cuid())
+  assetId      String           @unique
+  asset        Asset            @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  templateType RuleTemplateType
+  weightsJson  Json
+  updatedAt    DateTime         @updatedAt
+  createdAt    DateTime         @default(now())
+}
+
+model AssetPromptConfig {
+  id         String   @id @default(cuid())
+  assetId     String   @unique
+  asset       Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  promptText  String   @db.Text
+  version     Int      @default(1)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model SystemAiConfig {
+  id               String   @id @default(cuid())
+  provider         String
+  model            String
+  baseUrl          String
+  apiKeyEncrypted  String
+  connectionStatus String
+  lastCheckedAt    DateTime?
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
+}
+
+model SystemTelegramConfig {
+  id               String   @id @default(cuid())
+  botTokenEncrypted String
+  alertChatId      String
+  connectionStatus String
+  lastCheckedAt    DateTime?
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
+}
+
+model SourceConfig {
+  id         String   @id @default(cuid())
+  configKey  String   @unique
+  sourceType String   @unique
+  sourceName String
+  status     String
+  coverage   String
+  configJson Json?
+  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now())
+}
+
+model GlobalConfigSection {
+  id         String   @id @default(cuid())
+  sectionKey String   @unique
+  title      String
+  configJson Json
+  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now())
+}
