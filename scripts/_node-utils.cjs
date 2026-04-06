@@ -76,6 +76,26 @@ function loadEnv(rootDir) {
     }
   }
 
+  const apiHost = process.env.API_HOST || "127.0.0.1";
+  const apiPort = process.env.API_PORT || "4000";
+  const webHost = process.env.WEB_HOST || "127.0.0.1";
+  const webPort = process.env.WEB_PORT || "3000";
+
+  if (process.env.API_BASE_URL == null || process.env.API_BASE_URL === "") {
+    process.env.API_BASE_URL = `http://${apiHost}:${apiPort}`;
+  }
+
+  if (
+    process.env.NEXT_PUBLIC_API_BASE_URL == null ||
+    process.env.NEXT_PUBLIC_API_BASE_URL === ""
+  ) {
+    process.env.NEXT_PUBLIC_API_BASE_URL = process.env.API_BASE_URL;
+  }
+
+  if (process.env.WEB_BASE_URL == null || process.env.WEB_BASE_URL === "") {
+    process.env.WEB_BASE_URL = `http://${webHost}:${webPort}`;
+  }
+
   return envFile;
 }
 

@@ -13,9 +13,49 @@ const {
   terminatePid
 } = require("./_node-utils.cjs");
 
+function formatError(error) {
+  if (!error) {
+    return "Unknown error.";
+  }
+
+  const parts = [];
+
+  if (error.message) {
+    parts.push(String(error.message).trim());
+  }
+
+  const stderr = String(error.stderr || "").trim();
+  const stdout = String(error.stdout || "").trim();
+
+  if (stderr) {
+    parts.push(stderr);
+  } else if (stdout) {
+    parts.push(stdout);
+  }
+
+  return parts.filter(Boolean).join(" | ") || "Unknown error.";
+}
+
+function printStep(step, message) {
+  console.log(`[${step}] ${message}`);
+}
+
+function readLogTail(filePath, maxLines = 20) {
+  if (!fs.existsSync(filePath)) {
+    return "";
+  }
+
+  const content = fs.readFileSync(filePath, "utf8").trim();
+  if (!content) {
+    return "";
+  }
+
+  return content.split(/\r?\n/).slice(-maxLines).join("\n");
+}
+
 async function main() {
   const rootDir = getRootDir();
-  loadEnv(rootDir);
+  const envFile = loadEnv(rootDir);
 
   const npmCommand = getCommand("npm");
   const apiBaseUrl =
@@ -28,42 +68,45 @@ async function main() {
   let dependenciesInstalled = false;
 
   console.log("Starting AlphaPony...");
+  printStep("env", `Using env file: ${envFile ?? "none"}`);
+  printStep("env", `API target: ${apiBaseUrl}`);
+  printStep("env", `Web target: ${webBaseUrl}`);
 
   if (!fs.existsSync(path.join(rootDir, "node_modules"))) {
-    console.log("Dependencies are missing. Installing with npm ci...");
+    printStep("1/6", "Dependencies are missing. Installing with npm ci...");
     await runCommand(npmCommand, ["ci"], { cwd: rootDir });
-    console.log("Dependencies installed.");
+    printStep("1/6", "Dependencies installed.");
     bootstrapRequired = true;
     dependenciesInstalled = true;
   } else {
-    console.log("Dependencies check passed.");
+    printStep("1/6", "Dependencies check passed.");
   }
 
   if (!fs.existsSync(path.join(rootDir, "node_modules", "@prisma", "client", "index.js"))) {
-    console.log("Prisma Client is missing. Generating...");
+    printStep("2/6", "Prisma Client is missing. Generating...");
     await runCommand(process.execPath, [path.join(rootDir, "scripts", "prisma-generate.cjs")], {
       cwd: rootDir
     });
-    console.log("Prisma Client generated.");
+    printStep("2/6", "Prisma Client generated.");
     bootstrapRequired = true;
   } else {
-    console.log("Prisma Client check passed.");
+    printStep("2/6", "Prisma Client check passed.");
   }
 
-  console.log("Checking database availability...");
+  printStep("3/6", "Checking database availability...");
   await ensureDatabase();
-  console.log("Database is ready.");
+  printStep("3/6", "Database is ready.");
 
   if (
     !fs.existsSync(path.join(rootDir, "backend", "dist", "main.js")) ||
     !fs.existsSync(path.join(rootDir, "frontend", ".next", "BUILD_ID"))
   ) {
-    console.log("Build artifacts are missing. Building application...");
+    printStep("4/6", "Build artifacts are missing. Building application...");
     await runCommand(npmCommand, ["run", "build"], { cwd: rootDir });
-    console.log("Build completed.");
+    printStep("4/6", "Build completed.");
     bootstrapRequired = true;
   } else {
-    console.log("Build artifacts check passed.");
+    printStep("4/6", "Build artifacts check passed.");
   }
 
   if (
@@ -71,13 +114,13 @@ async function main() {
     (process.env.ALPHAPONY_AUTO_MIGRATE_ON_START || "1") === "1" &&
     (bootstrapRequired || dependenciesInstalled)
   ) {
-    console.log("Running database migrations...");
+    printStep("5/6", "Running database migrations...");
     await runCommand(process.execPath, [path.join(rootDir, "scripts", "migrate.cjs")], {
       cwd: rootDir
     });
-    console.log("Database migrations completed.");
+    printStep("5/6", "Database migrations completed.");
   } else {
-    console.log("Database migration check passed.");
+    printStep("5/6", "Database migration check passed.");
   }
 
   const runtimeDir = path.join(rootDir, ".runtime");
@@ -97,21 +140,23 @@ async function main() {
 
   fs.writeFileSync(appPidFile, `${process.pid}\n`);
 
-  const apiLogStream = fs.createWriteStream(path.join(logDir, "api.log"), { flags: "a" });
-  const webLogStream = fs.createWriteStream(path.join(logDir, "web.log"), { flags: "a" });
   const apiPidFile = path.join(pidDir, "api.pid");
   const webPidFile = path.join(pidDir, "web.pid");
   const apiLogPath = path.join(logDir, "api.log");
   const webLogPath = path.join(logDir, "web.log");
+  fs.writeFileSync(apiLogPath, "");
+  fs.writeFileSync(webLogPath, "");
+  const apiLogStream = fs.createWriteStream(apiLogPath, { flags: "a" });
+  const webLogStream = fs.createWriteStream(webLogPath, { flags: "a" });
 
-  console.log("Starting backend service...");
+  printStep("6/6", "Starting backend service...");
   const apiProcess = spawn(npmCommand, ["run", "start", "-w", "backend"], {
     cwd: rootDir,
     env: process.env,
     stdio: ["ignore", "pipe", "pipe"]
   });
 
-  console.log("Starting frontend service...");
+  printStep("6/6", "Starting frontend service...");
   const webProcess = spawn(npmCommand, ["run", "start", "-w", "frontend"], {
     cwd: rootDir,
     env: {
@@ -175,12 +220,13 @@ async function main() {
 
   let healthcheckPassed = false;
   const maxHealthcheckAttempts = Number(process.env.ALPHAPONY_HEALTHCHECK_RETRIES || "30");
+  let lastHealthcheckError = "";
 
   for (let attempt = 0; attempt < maxHealthcheckAttempts; attempt += 1) {
     try {
       await runCommand(process.execPath, [path.join(rootDir, "scripts", "healthcheck.cjs")], {
         cwd: rootDir,
-        stdio: "ignore"
+        stdio: "pipe"
       });
 
       console.log("Backend started successfully.");
@@ -190,21 +236,41 @@ async function main() {
       console.log(`Logs: ${apiLogPath} , ${webLogPath}`);
       healthcheckPassed = true;
       break;
-    } catch {
+    } catch (error) {
+      lastHealthcheckError = formatError(error);
+
       if (apiProcess.exitCode != null || webProcess.exitCode != null) {
         break;
       }
 
-      if (attempt === 0) {
-        console.log("Waiting for services to become ready...");
-      }
+      console.log(
+        `Waiting for services to become ready... (${attempt + 1}/${maxHealthcheckAttempts}) ${lastHealthcheckError}`
+      );
 
       await sleep(2000);
     }
   }
 
-  if (!healthcheckPassed && (apiProcess.exitCode != null || webProcess.exitCode != null)) {
-    console.error(`Service startup failed. Check logs: ${apiLogPath} , ${webLogPath}`);
+  if (!healthcheckPassed) {
+    if (apiProcess.exitCode != null || webProcess.exitCode != null) {
+      const failedSource = apiProcess.exitCode != null ? "backend" : "frontend";
+      const failedLogPath = apiProcess.exitCode != null ? apiLogPath : webLogPath;
+      const failedTail = readLogTail(failedLogPath);
+      console.error(`Service startup failed: ${failedSource} exited before healthcheck passed.`);
+      if (lastHealthcheckError) {
+        console.error(`Last healthcheck error: ${lastHealthcheckError}`);
+      }
+      console.error(`Check logs: ${apiLogPath} , ${webLogPath}`);
+      if (failedTail) {
+        console.error(`Recent ${failedSource} log output:\n${failedTail}`);
+      }
+    } else {
+      console.error(`Service startup timed out after ${maxHealthcheckAttempts} healthcheck attempts.`);
+      if (lastHealthcheckError) {
+        console.error(`Last healthcheck error: ${lastHealthcheckError}`);
+      }
+      console.error(`Check logs: ${apiLogPath} , ${webLogPath}`);
+    }
   }
 
   const firstExit = await Promise.race(exitPromises);
