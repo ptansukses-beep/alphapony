@@ -53,6 +53,20 @@ function readLogTail(filePath, maxLines = 20) {
   return content.split(/\r?\n/).slice(-maxLines).join("\n");
 }
 
+async function isUrlReady(url, timeoutMs = 1200) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    return response.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 async function main() {
   const rootDir = getRootDir();
   const envFile = loadEnv(rootDir);
@@ -71,6 +85,17 @@ async function main() {
   printStep("env", `Using env file: ${envFile ?? "none"}`);
   printStep("env", `API target: ${apiBaseUrl}`);
   printStep("env", `Web target: ${webBaseUrl}`);
+
+  const existingApiReady = await isUrlReady(`${apiBaseUrl}/api/dashboard/assets`);
+  const existingWebReady = await isUrlReady(webBaseUrl);
+
+  if (existingApiReady && existingWebReady) {
+    console.error("AlphaPony is already running.");
+    console.error(`Frontend: ${webBaseUrl}`);
+    console.error(`Backend: ${apiBaseUrl}`);
+    console.error("If you want to restart it, run: npm run stop && npm run start");
+    process.exit(1);
+  }
 
   if (!fs.existsSync(path.join(rootDir, "node_modules"))) {
     printStep("1/6", "Dependencies are missing. Installing with npm ci...");
