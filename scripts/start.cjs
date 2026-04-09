@@ -134,6 +134,9 @@ async function main() {
     const runningPid = Number(fs.readFileSync(appPidFile, "utf8").trim());
     if (Number.isFinite(runningPid) && isPidRunning(runningPid)) {
       console.error(`AlphaPony is already running with PID ${runningPid}.`);
+      console.error(`Frontend: ${webBaseUrl}`);
+      console.error(`Backend: ${apiBaseUrl}`);
+      console.error("If you want to restart it, run: npm run stop && npm run start");
       process.exit(1);
     }
   }
