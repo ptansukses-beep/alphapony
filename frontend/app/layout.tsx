@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -12,7 +13,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "AlphaPony",
-  description: "Configurable AI market analysis workspace"
+  description: "Configurable AI market analysis workspace",
+  icons: {
+    icon: "/logo-icon-81ecff.png",
+    apple: "/logo-icon-81ecff.png"
+  }
 };
 
 export default async function RootLayout({
@@ -22,6 +27,8 @@ export default async function RootLayout({
 }>) {
   const locale = getServerLocale();
   const dict = getDictionary(locale);
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "http://127.0.0.1:4000";
   let updateAvailable = false;
 
   try {
@@ -42,6 +49,11 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.__ALPHAPONY_API_BASE_URL__ = ${JSON.stringify(apiBaseUrl)};`
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -75,10 +87,18 @@ export default async function RootLayout({
           <header className="topbar">
             <div className="topbar-inner">
               <Link href="/" className="brand">
-                <div className="brand-mark">AP</div>
+                <div className="brand-mark" aria-hidden="true">
+                  <Image
+                    src="/logo-icon-81ecff.png"
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="brand-mark-image"
+                    priority
+                  />
+                </div>
                 <div className="brand-copy">
                   <span className="brand-name">{dict.meta.brandTitle}</span>
-                  <span className="eyebrow">{dict.meta.brandSubtitle}</span>
                 </div>
               </Link>
               <nav className="nav-links" aria-label={dict.nav.home}>

@@ -7,6 +7,7 @@ import {
   LOCALE_COOKIE_KEY,
   LOCALE_STORAGE_KEY,
   localeOptions,
+  DEFAULT_LOCALE,
   normalizeLocale,
   type LocaleCode
 } from "@/lib/i18n/config";
@@ -31,6 +32,10 @@ export function LanguageSwitcher({ switchLabel, menuLabel }: LanguageSwitcherPro
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const currentLanguageLabel =
+    localeOptions.find((item) => item.code === language)?.label ??
+    localeOptions.find((item) => item.code === DEFAULT_LOCALE)?.label ??
+    language;
 
   useEffect(() => {
     const stored = normalizeLocale(window.localStorage.getItem(LOCALE_STORAGE_KEY));
@@ -84,7 +89,9 @@ export function LanguageSwitcher({ switchLabel, menuLabel }: LanguageSwitcherPro
         aria-expanded={open}
         aria-label={switchLabel}
       >
-        <span className="lang-label" aria-hidden="true" suppressHydrationWarning />
+        <span className="lang-label" aria-hidden="true" suppressHydrationWarning>
+          {currentLanguageLabel}
+        </span>
       </button>
       {open ? (
         <div className="lang-menu" role="menu" aria-label={menuLabel}>

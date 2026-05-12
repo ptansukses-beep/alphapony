@@ -71,6 +71,13 @@ cp .env.example .env
 - `WEB_HOST`
 - `NEXT_PUBLIC_API_BASE_URL`
 
+可选 Telegram 告警变量：
+
+- `TELEGRAM_BOT_TOKEN`：用户自己的 Telegram BotFather Bot Token
+- `TELEGRAM_ALERT_CHAT_ID`：用户自己的告警接收 Chat ID
+
+AlphaPony 不内置默认 Telegram Bot。用户可以在 `.env` 中配置 Telegram 告警，也可以在启动后进入管理页配置。
+
 ### 2. 启动数据库
 
 如果本机已安装并运行 PostgreSQL，直接使用你的 `DATABASE_URL` 即可。  

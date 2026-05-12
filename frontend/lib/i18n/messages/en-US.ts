@@ -139,7 +139,7 @@ export const enUSMessages = {
     botToken: "Bot Token",
     alertChatId: "Alert Chat ID",
     keepCurrentApiKey: "Leave blank to keep the current API key.",
-    keepCurrentBotToken: "Leave blank to keep the current bot token.",
+    keepCurrentBotToken: "Enter your own Telegram bot token. Leave blank to keep the current bot token.",
     keepCurrentAlertChatId: "Leave blank to keep the current alert chat ID.",
     connectionStatus: "Connection Status",
     type: "Type",
@@ -164,7 +164,6 @@ export const enUSMessages = {
   },
   meta: {
     brandTitle: "AlphaPony",
-    brandSubtitle: "AI Market Desk",
     appDescription: "Configurable AI market analysis workspace"
   }
 } as const;

@@ -11,12 +11,31 @@ import type {
   UpdateStatusResponse
 } from "@/lib/api-types";
 
+declare global {
+  interface Window {
+    __ALPHAPONY_API_BASE_URL__?: string;
+  }
+}
+
+function normalizeApiBaseUrl(value?: string) {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed.replace(/\/+$/, "") : undefined;
+}
+
 function getApiBaseUrl() {
   if (typeof window !== "undefined") {
-    return process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:4000";
+    return (
+      normalizeApiBaseUrl(window.__ALPHAPONY_API_BASE_URL__) ??
+      normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL) ??
+      "http://127.0.0.1:4000"
+    );
   }
 
-  return process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:4000";
+  return (
+    normalizeApiBaseUrl(process.env.API_BASE_URL) ??
+    normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL) ??
+    "http://127.0.0.1:4000"
+  );
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {

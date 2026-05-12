@@ -71,6 +71,13 @@ Minimum commonly used variables:
 - `WEB_HOST`
 - `NEXT_PUBLIC_API_BASE_URL`
 
+Optional Telegram alert variables:
+
+- `TELEGRAM_BOT_TOKEN`: your own Telegram bot token from BotFather
+- `TELEGRAM_ALERT_CHAT_ID`: your own alert destination chat ID
+
+AlphaPony does not ship with a default Telegram bot. You can configure Telegram alerts either in `.env` or from the Management page after startup.
+
 ### 2. Start the database
 
 If PostgreSQL is already installed and running locally, just use your own `DATABASE_URL`.  

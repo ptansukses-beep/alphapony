@@ -139,7 +139,7 @@ export const zhCNMessages = {
     botToken: "Bot Token",
     alertChatId: "Alert Chat ID",
     keepCurrentApiKey: "留空则保留当前 API Key。",
-    keepCurrentBotToken: "留空则保留当前 Bot Token。",
+    keepCurrentBotToken: "请输入你自己的 Telegram Bot Token。留空则保留当前 Bot Token。",
     keepCurrentAlertChatId: "留空则保留当前 Alert Chat ID。",
     connectionStatus: "连接状态",
     type: "类型",
@@ -164,7 +164,6 @@ export const zhCNMessages = {
   },
   meta: {
     brandTitle: "AlphaPony",
-    brandSubtitle: "AI Market Desk",
     appDescription: "可配置的 AI 市场分析工作台"
   }
 } as const;
