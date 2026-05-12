@@ -3,21 +3,25 @@
 [![English](https://img.shields.io/badge/English-README-111111?style=flat-square)](./README.md)
 [![中文](https://img.shields.io/badge/%E4%B8%AD%E6%96%87-README-f5f5f5?style=flat-square&labelColor=111111)](./README.ch.md)
 
-AlphaPony is the first decentralized AI investment assistant for the crypto asset industry, built to help investors make simple, fast, and accurate decisions and continuously improve returns in crypto markets.
+AlphaPony is an open-source AI research tool for crypto asset signals. It helps users collect, organize, and review market-related signals in one place.
 
-It brings 6 previously fragmented signal groups together and combines semantic analysis, market signal analysis, other quantitative baseline rules, and large-model AI analysis to generate directional buy/sell signals and help users make decisions quickly:
+It brings 6 previously fragmented signal groups together and combines semantic analysis, market signal analysis, quantitative baseline rules, and large-model AI summaries to present research signals and supporting context:
 
-- current rule-based direction
-- current AI direction
+- current rule-based signal state
+- current AI signal state
 - signal-level drivers
 - recent event timeline
 - important alerts and Telegram delivery
+
+## Disclaimer
+
+AlphaPony is a research and information tool only. It does not provide investment, financial, legal, tax, or trading advice, and it does not recommend buying, selling, holding, or trading any asset. All outputs are generated from configured data sources and rule/AI models for reference only. Users are solely responsible for their own research, risk assessment, and decisions.
 
 ## Core Capabilities
 
 - Tracks `BTC`, `ETH`, `SOL`, `BNB`, `XRP`, and `DOGE`
 - Aggregates `Market`, `News`, `Community`, `KOL`, `On-chain`, and `Whale` signals
-- Provides rule scores, direction states, signal explanations, and event timelines
+- Provides rule scores, signal states, signal explanations, and event timelines
 - Supports bilingual UI and bilingual AI analysis
 - Supports an alerts center, Telegram delivery, and connection testing
 - Supports light and dark themes
@@ -25,8 +29,8 @@ It brings 6 previously fragmented signal groups together and combines semantic a
 
 ## Product Pages
 
-- Home dashboard: overview of current directions, AI states, and recent alerts across all assets
-- Asset detail page: signal breakdown, AI conclusion, timeline, and alerts for one asset
+- Home dashboard: overview of current signal states, AI states, and recent alerts across all assets
+- Asset detail page: signal breakdown, AI-generated research summary, timeline, and alerts for one asset
 - Timeline page: recent events for a single asset or all assets
 - Alerts center: alert history and severity levels
 - Strategy center: signal strategy
@@ -34,16 +38,20 @@ It brings 6 previously fragmented signal groups together and combines semantic a
 
 ## Future Roadmap
 
-- Support multi-asset portfolio analysis
-- Support backtesting and paper trading
+- Support multi-asset signal views
+- Support historical replay and simulation
 - Support more advanced custom strategies
-- Support auto-ordering and execution
+- Support optional workflow integrations while keeping all external actions user-controlled
 
 ## Tech Stack
 
 - Frontend: `Next.js 14`, `React 18`, `TypeScript`
 - Backend: `NestJS 11`, `TypeScript`
 - Database: `PostgreSQL`, `Prisma`
+
+## License
+
+AlphaPony is released under the [MIT License](./LICENSE).
 
 ## Quick Start
 
