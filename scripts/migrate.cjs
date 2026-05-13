@@ -23,8 +23,8 @@ async function main() {
   await runCommand(prismaBin, [
     "migrate",
     "deploy",
-    "--schema",
-    path.join(rootDir, "backend", "prisma", "schema.prisma")
+    "--config",
+    path.join(rootDir, "backend", "prisma.config.ts")
   ]);
 }
 

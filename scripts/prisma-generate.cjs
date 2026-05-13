@@ -22,8 +22,8 @@ async function main() {
 
   await runCommand(prismaBin, [
     "generate",
-    "--schema",
-    path.join(rootDir, "backend", "prisma", "schema.prisma")
+    "--config",
+    path.join(rootDir, "backend", "prisma.config.ts")
   ]);
 }
 

@@ -1,16 +1,53 @@
 services:
+  app:
+    build:
+      context: .
+    image: alphapony:0.1.0
+    container_name: alphapony-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${ALPHAPONY_WEB_PORT:-3000}:3000"
+      - "${ALPHAPONY_API_PORT:-4000}:4000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/alphapony?schema=public"
+      API_HOST: "0.0.0.0"
+      API_PORT: "4000"
+      API_BASE_URL: "http://127.0.0.1:4000"
+      NEXT_PUBLIC_API_BASE_URL: "http://127.0.0.1:${ALPHAPONY_API_PORT:-4000}"
+      WEB_HOST: "0.0.0.0"
+      WEB_PORT: "3000"
+      WEB_BASE_URL: "http://127.0.0.1:3000"
+      ALPHAPONY_SEED_ON_EMPTY: "1"
+    volumes:
+      - alphapony-runtime:/app/.runtime
+    healthcheck:
+      test: ["CMD", "npm", "run", "healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
   postgres:
     image: postgres:16
     container_name: alphapony-postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "${ALPHAPONY_POSTGRES_PORT:-5432}:5432"
     environment:
       POSTGRES_DB: alphapony
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
       - alphapony-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d alphapony"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
 volumes:
   alphapony-postgres-data:
+  alphapony-runtime:

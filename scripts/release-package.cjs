@@ -36,8 +36,11 @@ async function main() {
     "scripts",
     "package.json",
     "package-lock.json",
+    "Dockerfile",
+    ".dockerignore",
     "docker-compose.yml",
     ".env.example",
+    "LICENSE",
     "README.md",
     "README.ch.md"
   ]) {

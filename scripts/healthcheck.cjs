@@ -30,7 +30,7 @@ async function main() {
     process.env.WEB_BASE_URL ||
     `http://${process.env.WEB_HOST || "127.0.0.1"}:${process.env.WEB_PORT || "3000"}`;
 
-  await fetchOrThrow(`${apiBase}/api/dashboard/assets`, "API");
+  await fetchOrThrow(`${apiBase}/api/management/update-status`, "API");
   await fetchOrThrow(webBase, "Web");
 }
 

@@ -55,7 +55,36 @@ AlphaPony 基于 [MIT License](./LICENSE) 开源。
 
 ## 快速启动
 
-### 1. 准备环境变量
+### 方式 A：Docker Compose
+
+最快的自托管方式是 Docker Compose。它会构建 AlphaPony 应用镜像，并启动 PostgreSQL：
+
+```bash
+docker compose up --build
+```
+
+默认地址：
+
+- 前端：`http://127.0.0.1:3000`
+- 后端：`http://127.0.0.1:4000`
+
+Docker 入口脚本会等待 PostgreSQL 就绪、执行 Prisma migration，并且只在数据库为空时写入演示数据。停止服务：
+
+```bash
+docker compose down
+```
+
+只有在你也想删除 PostgreSQL 数据卷时，才使用 `docker compose down -v`。
+
+如果本机 `3000`、`4000` 或 `5432` 端口已被占用，可以启动前覆盖端口：
+
+```bash
+ALPHAPONY_WEB_PORT=3310 ALPHAPONY_API_PORT=4310 ALPHAPONY_POSTGRES_PORT=5433 docker compose up --build
+```
+
+### 方式 B：本地 Node.js
+
+#### 1. 准备环境变量
 
 ```bash
 cp .env.example .env
@@ -78,7 +107,7 @@ cp .env.example .env
 
 AlphaPony 不内置默认 Telegram Bot。用户可以在 `.env` 中配置 Telegram 告警，也可以在启动后进入管理页配置。
 
-### 2. 启动数据库
+#### 2. 启动数据库
 
 如果本机已安装并运行 PostgreSQL，直接使用你的 `DATABASE_URL` 即可。  
 如果想用 Docker 启动项目自带的 PostgreSQL：
@@ -87,7 +116,7 @@ AlphaPony 不内置默认 Telegram Bot。用户可以在 `.env` 中配置 Telegr
 npm run db:up
 ```
 
-### 3. 启动应用
+#### 3. 启动应用
 
 ```bash
 npm run start

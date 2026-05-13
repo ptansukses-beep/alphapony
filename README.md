@@ -55,7 +55,36 @@ AlphaPony is released under the [MIT License](./LICENSE).
 
 ## Quick Start
 
-### 1. Prepare environment variables
+### Option A: Docker Compose
+
+The fastest self-hosted path is Docker Compose. It builds the AlphaPony app image and starts PostgreSQL:
+
+```bash
+docker compose up --build
+```
+
+Default addresses:
+
+- Frontend: `http://127.0.0.1:3000`
+- Backend: `http://127.0.0.1:4000`
+
+The Docker entrypoint waits for PostgreSQL, runs Prisma migrations, and seeds demo data only when the database is empty. To stop the stack:
+
+```bash
+docker compose down
+```
+
+Use `docker compose down -v` only when you also want to delete the PostgreSQL volume.
+
+If local ports `3000`, `4000`, or `5432` are already in use, override them before starting:
+
+```bash
+ALPHAPONY_WEB_PORT=3310 ALPHAPONY_API_PORT=4310 ALPHAPONY_POSTGRES_PORT=5433 docker compose up --build
+```
+
+### Option B: Local Node.js
+
+#### 1. Prepare environment variables
 
 ```bash
 cp .env.example .env
@@ -78,7 +107,7 @@ Optional Telegram alert variables:
 
 AlphaPony does not ship with a default Telegram bot. You can configure Telegram alerts either in `.env` or from the Management page after startup.
 
-### 2. Start the database
+#### 2. Start the database
 
 If PostgreSQL is already installed and running locally, just use your own `DATABASE_URL`.  
 If you want to start the bundled PostgreSQL service with Docker:
@@ -87,7 +116,7 @@ If you want to start the bundled PostgreSQL service with Docker:
 npm run db:up
 ```
 
-### 3. Start the application
+#### 3. Start the application
 
 ```bash
 npm run start
