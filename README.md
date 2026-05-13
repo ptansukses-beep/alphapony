@@ -57,7 +57,13 @@ AlphaPony is released under the [MIT License](./LICENSE).
 
 ### Option A: Docker Compose
 
-The fastest self-hosted path is Docker Compose. It builds the AlphaPony app image and starts PostgreSQL:
+The fastest self-hosted path is Docker Compose with the published Docker Hub image:
+
+```bash
+docker compose -f docker-compose.hub.yml up -d
+```
+
+This pulls `jiuwuwu/alphapony:0.1.0` and starts PostgreSQL. To build the image locally from source instead:
 
 ```bash
 docker compose up --build
@@ -79,7 +85,7 @@ Use `docker compose down -v` only when you also want to delete the PostgreSQL vo
 If local ports `3000`, `4000`, or `5432` are already in use, override them before starting:
 
 ```bash
-ALPHAPONY_WEB_PORT=3310 ALPHAPONY_API_PORT=4310 ALPHAPONY_POSTGRES_PORT=5433 docker compose up --build
+ALPHAPONY_WEB_PORT=3310 ALPHAPONY_API_PORT=4310 ALPHAPONY_POSTGRES_PORT=5433 docker compose -f docker-compose.hub.yml up -d
 ```
 
 ### Option B: Local Node.js

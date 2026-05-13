@@ -39,6 +39,7 @@ async function main() {
     "Dockerfile",
     ".dockerignore",
     "docker-compose.yml",
+    "docker-compose.hub.yml",
     ".env.example",
     "LICENSE",
     "README.md",

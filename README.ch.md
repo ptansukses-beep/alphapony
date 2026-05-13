@@ -57,7 +57,13 @@ AlphaPony 基于 [MIT License](./LICENSE) 开源。
 
 ### 方式 A：Docker Compose
 
-最快的自托管方式是 Docker Compose。它会构建 AlphaPony 应用镜像，并启动 PostgreSQL：
+最快的自托管方式是使用 Docker Compose 和已经发布到 Docker Hub 的镜像：
+
+```bash
+docker compose -f docker-compose.hub.yml up -d
+```
+
+这会拉取 `jiuwuwu/alphapony:0.1.0` 并启动 PostgreSQL。如果想从源码本地构建镜像：
 
 ```bash
 docker compose up --build
@@ -79,7 +85,7 @@ docker compose down
 如果本机 `3000`、`4000` 或 `5432` 端口已被占用，可以启动前覆盖端口：
 
 ```bash
-ALPHAPONY_WEB_PORT=3310 ALPHAPONY_API_PORT=4310 ALPHAPONY_POSTGRES_PORT=5433 docker compose up --build
+ALPHAPONY_WEB_PORT=3310 ALPHAPONY_API_PORT=4310 ALPHAPONY_POSTGRES_PORT=5433 docker compose -f docker-compose.hub.yml up -d
 ```
 
 ### 方式 B：本地 Node.js
