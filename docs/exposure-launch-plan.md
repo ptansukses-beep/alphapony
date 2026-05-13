@@ -99,6 +99,92 @@ Show HN: AlphaPony - An open-source AI research tool for crypto asset signals
 - 不要把输出描述为交易建议
 - 发布前复查平台最新规则
 
+Product Hunt 可复制文案：
+
+```text
+Product name:
+AlphaPony
+
+Tagline:
+Open-source AI research tool for crypto asset signals
+
+Short description:
+AlphaPony is a self-hosted AI research assistant that helps users collect and review crypto market signals across market data, news, community activity, KOL updates, on-chain context, whale activity, alerts, and timelines.
+
+Launch post / maker comment:
+Hi Product Hunt,
+
+We built AlphaPony as an open-source, self-hosted AI research tool for crypto asset signals.
+
+Crypto research often means jumping between market dashboards, news feeds, community channels, on-chain explorers, whale trackers, and personal notes. AlphaPony brings those signals into one dashboard, adds rule-based signal status, and uses AI to summarize context for research workflows.
+
+What it includes:
+- Market, news, community, KOL, on-chain, and whale signal views
+- Asset detail pages and event timelines
+- Alert center and configurable signal rules
+- Self-hosted Docker setup
+- MIT-licensed source code
+
+This is a research and information tool only. It does not provide financial advice, investment advice, trading advice, or any recommendation to buy, sell, or hold any asset.
+
+We would appreciate feedback on the self-hosting flow, signal organization, and what integrations would be most useful next.
+
+GitHub:
+https://github.com/ptansukses-beep/alphapony
+
+Docker:
+docker compose -f docker-compose.hub.yml up -d
+```
+
+Product Hunt 中文备注：
+
+```text
+发布时不要把 AlphaPony 描述成投资工具、交易助手或收益工具。更稳妥的口径是 open-source/self-hosted AI research tool，并在首评里明确 not financial advice。
+```
+
+Hacker News Show HN 可复制文案：
+
+```text
+Title:
+Show HN: AlphaPony - An open-source AI research tool for crypto asset signals
+
+Post:
+Hi HN,
+
+I built AlphaPony, an open-source, self-hosted AI research tool for crypto asset signals.
+
+The goal is to reduce the amount of context-switching involved in crypto research. Instead of checking separate tools for market data, news, community activity, KOL updates, on-chain context, whale activity, alerts, and timelines, AlphaPony organizes those signals into one local dashboard.
+
+It includes:
+
+- A Next.js frontend and NestJS backend
+- PostgreSQL and Prisma
+- Docker Compose setup
+- Market, news, community, KOL, on-chain, and whale signal modules
+- Rule-based signal status
+- AI-generated research summaries
+- Asset detail pages, timelines, and alerts
+
+It is MIT licensed and can be run locally:
+
+git clone https://github.com/ptansukses-beep/alphapony.git
+cd alphapony
+docker compose -f docker-compose.hub.yml up -d
+
+Frontend: http://127.0.0.1:3000
+Backend: http://127.0.0.1:4000
+
+Important note: AlphaPony is a research and information tool only. It does not provide financial advice, investment advice, trading advice, or buy/sell/hold recommendations.
+
+I would appreciate feedback on the architecture, the self-hosting flow, and which data integrations would be most useful next.
+```
+
+Show HN 发布备注：
+
+```text
+HN 更看重能运行、能看源码、能讨论技术实现。发帖时不要放营销口吻，不要拉票，不要承诺收益。标题用 Show HN 格式即可。
+```
+
 ### 3. 技术内容平台
 
 目标：用文章解释项目背景、架构和实现，获得搜索流量和开发者信任。
@@ -193,32 +279,43 @@ pip install alphapony
 | 免责声明 | 已完成 | README 中英文均已加入不提供投资/交易建议说明 |
 | 开源协议 | 已完成 | 已使用 MIT License |
 | GitHub 发布 | 已完成 | README、LICENSE 和 license 元数据已推送到 GitHub |
-| Release 包 | 部分完成 | 本地已有 `dist/release/latest.json` 和 zip 包，是否已上传需发布前确认 |
-| 截图 | 未完成 | 仓库内未发现正式产品截图资产 |
-| 30 秒 demo GIF/短视频 | 未完成 | 仓库内未发现 demo GIF 或短视频资产 |
-| Product Hunt | 未开始 | 需要先准备截图、demo 和 launch 文案 |
-| Hacker News Show HN | 未开始 | 需要可试用链接或清晰运行说明 |
+| Release 包 | 已完成 | GitHub Release `v0.1.0` 已包含 zip 包和 `latest.json` |
+| 截图 | 已完成 | 用户已在本地准备 3-5 张截图，未纳入仓库 |
+| 20-30 秒 demo GIF/短视频 | 已完成 | 用户已在本地准备 demo 素材，未纳入仓库 |
+| Product Hunt | 待发布 | 文案已准备，实际发布需要登录 Product Hunt |
+| Hacker News Show HN | 待发布 | 文案已准备，实际发布需要登录 Hacker News |
 | DEV/Hashnode/Medium 文章 | 未开始 | 需要准备英文长文 |
 | 掘金/知乎/SegmentFault/CSDN/开源中国文章 | 未开始 | 需要准备中文长文 |
 | SaaSHub/AlternativeTo/AI 工具目录 | 未开始 | 需要截图、描述和链接 |
 | npm 包 | 未开始 | 需要先定义 CLI 或 SDK |
-| Docker 镜像 | 未开始 | 仓库当前没有 Dockerfile |
+| Docker 镜像 | 已完成 | 已发布 `jiuwuwu/alphapony:0.1.0` 和 `jiuwuwu/alphapony:latest` |
+| Docker Hub 信息页 | 已完成 | 用户已补充 short description 和 overview |
 | Homebrew Tap | 未开始 | 需要先有 CLI 或可安装包 |
 | PyPI 包 | 不建议现在做 | 当前没有 Python SDK/CLI |
 
 ## 下一步建议
 
-优先做第 1 步剩余材料：
+当前基础材料已经具备，可以进入发布阶段：
 
-1. 生成 3-5 张产品截图：
-   - 首页看板
-   - 资产详情页
-   - 时间线页
-   - 告警中心
-   - 管理页
-2. 录制一个 20-30 秒 demo GIF 或短视频。
-3. 确认 GitHub Release 是否已包含 zip 包和 `latest.json`。
-4. 写好 Product Hunt 和 Show HN 发布文案。
-5. 再开始发 Product Hunt、Show HN 和第一篇中英文文章。
+1. 用本文档里的 Product Hunt 文案创建 Product Hunt launch。
+2. 用本文档里的 Show HN 文案发布 Hacker News。
+3. 发布后把 Product Hunt / HN 链接同步到 X、LinkedIn、Telegram、Discord。
+4. 基于 Product Hunt 和 Show HN 文案扩展英文长文，发布到 DEV.to / Hashnode / Medium。
+5. 基于同一内容写中文版本，发布到掘金 / 知乎 / SegmentFault / CSDN / 开源中国。
+6. 再提交 SaaSHub、AlternativeTo 和 AI 工具目录。
 
-在这些材料完成前，不建议先提交 Product Hunt 或 AI 工具目录，因为缺少截图和 demo 会明显降低转化率。
+发布时优先使用以下链接：
+
+```text
+GitHub:
+https://github.com/ptansukses-beep/alphapony
+
+GitHub Release:
+https://github.com/ptansukses-beep/alphapony/releases/tag/v0.1.0
+
+Docker Hub:
+https://hub.docker.com/r/jiuwuwu/alphapony
+
+Docker image:
+jiuwuwu/alphapony:0.1.0
+```
